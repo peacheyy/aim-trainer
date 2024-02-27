@@ -1,11 +1,11 @@
 using UnityEngine;
 using TMPro;
 
-public class TargetController : MonoBehaviour {
+public class GameController : MonoBehaviour {
 
-    public static TargetController Instance;
+    public static GameController Instance;
 
-    public GameObject targetPrefab; // Assign the target prefab in the Unity editor
+    public GameObject targetPrefab;
     public TextMeshProUGUI hitCountText; // Assign the TextMeshPro text to display hit count
     public TextMeshProUGUI missCountText;
 
@@ -20,7 +20,6 @@ public class TargetController : MonoBehaviour {
 
     void Update() {
         Instance = this;
-        CheckForMiss();
     }
 
     private Vector3 GetRandomPosition() {
@@ -29,14 +28,14 @@ public class TargetController : MonoBehaviour {
         float objectHeight = targetPrefab.GetComponent<SpriteRenderer>().bounds.size.y; 
 
         // Get the size of the screen in world coordinates
-        Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+        Vector3 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
 
         // Define the boundaries for the random position
         float randomX = Random.Range(-screenBounds.x + objectWidth / 2, screenBounds.x - objectWidth / 2);
         float randomY = Random.Range(-screenBounds.y + objectHeight / 2, screenBounds.y - objectHeight / 2);
 
         // Create the random position
-        Vector2 randomPosition = new Vector3(randomX, randomY, 0);
+        Vector3 randomPosition = new Vector3(randomX, randomY, 0);
 
         return randomPosition;
     }
@@ -45,33 +44,14 @@ public class TargetController : MonoBehaviour {
         Instantiate(targetPrefab, GetRandomPosition(), Quaternion.identity);
     }
 
-    private void CheckForMiss() {
-    // Check for mouse click or touch input
-    if (Input.GetMouseButtonDown(0)) {
-        // Cast a ray from the mouse position
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-
-        // Perform the raycast
-        if (Physics.Raycast(ray, out hitInfo)) {
-            // Check if the hit object is not the target
-            if(hitInfo.collider.gameObject != targetPrefab) {
-                // Increment the miss count if the hit object is not the target
-                missCount++;
-                UpdateMissCountText(); // Update miss count text
-            }
-        } 
-        else {
-            // If no object is hit, increment the miss count
-            missCount++;
-            UpdateMissCountText(); // Update miss count text
-            }
-        }
-    }   
-
     public void TargetDestroyed() {
         hitCount++; // Increment hit count
         UpdateHitCountText();
+    }
+
+    public void TargetMissed() {
+        missCount++;
+        UpdateMissCountText();
     }
 
     void UpdateHitCountText() {
@@ -85,4 +65,5 @@ public class TargetController : MonoBehaviour {
             missCountText.text = "Misses: " + missCount.ToString();
         }
     }
+
 }
