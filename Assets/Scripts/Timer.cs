@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class DisplayTime : MonoBehaviour {
-    public float timeRemaining = 60;
+    public float timeRemaining = 10;
     public bool timerRunning = false;
     public TextMeshProUGUI timeText;
 
@@ -19,8 +20,8 @@ public class DisplayTime : MonoBehaviour {
             else {
                 Debug.Log("Time has run out!");
                 timeRemaining = 0;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
                 timerRunning = false;
-                
             }
         }
     }
