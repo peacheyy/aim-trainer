@@ -20,7 +20,7 @@ public class DisplayTime : MonoBehaviour {
             else {
                 Debug.Log("Time has run out!");
                 timeRemaining = 0;
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                SceneManager.LoadScene("GameOver");
                 timerRunning = false;
             }
         }
